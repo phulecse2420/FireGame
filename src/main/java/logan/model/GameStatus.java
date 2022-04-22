@@ -14,8 +14,8 @@ import lombok.Getter;
 
 public class GameStatus {
 
-    private static final String BORDER     = "\n==================================================================";
-    private static final int    MAX_LENGTH = 8;
+    private static final String BORDER    = "\n==================================================================";
+    private static       int    maxLength;
 
     private final List<Boolean> fires;
     private final GameStatus    parent;
@@ -25,7 +25,7 @@ public class GameStatus {
     private final Set<Integer>  checkedHash;
 
     private GameStatus () {
-        this(new ArrayList<>(MAX_LENGTH), null, null, 0, new HashSet<>());
+        this(new ArrayList<>(maxLength), null, null, 0, new HashSet<>());
     }
 
     public GameStatus (List<Boolean> fires, GameStatus parent, Integer step, int stackLength,
@@ -47,11 +47,12 @@ public class GameStatus {
 
     @Builder
     public static GameStatus initGameStatus (boolean[] input) {
-        if ( null == input || input.length != MAX_LENGTH ) {
+        if ( null == input ) {
             throw new IllegalArgumentException("Invalid input");
         }
+        maxLength = input.length;
         var gameStatus = new GameStatus();
-        for (int i = 0; i < MAX_LENGTH; i++) {
+        for (int i = 0; i < maxLength; i++) {
             gameStatus.fires.add(input[i]);
         }
         gameStatus.checkedHash.add(gameStatus.hashCode());
@@ -85,7 +86,7 @@ public class GameStatus {
     }
 
     public List<GameStatus> generateChildren () {
-        return IntStream.rangeClosed(1, MAX_LENGTH).mapToObj(index -> {
+        return IntStream.rangeClosed(1, maxLength).mapToObj(index -> {
             var child = new GameStatus(this, index);
             child.touch(index);
             child.checkedHash.add(child.hashCode());
@@ -103,8 +104,8 @@ public class GameStatus {
     private int getNextIndex (int index) {
         validateIndex(index);
         var result = index + 1;
-        if ( result > MAX_LENGTH ) {
-            result = result - MAX_LENGTH;
+        if ( result > maxLength ) {
+            result = result - maxLength;
         }
         return result;
     }
@@ -113,7 +114,7 @@ public class GameStatus {
         validateIndex(index);
         var result = index - 1;
         if ( result < 1 ) {
-            result = result + MAX_LENGTH;
+            result = result + maxLength;
         }
         return result;
     }
@@ -127,7 +128,7 @@ public class GameStatus {
     }
 
     private void validateIndex (int index) {
-        if ( index < 1 || index > MAX_LENGTH ) {
+        if ( index < 1 || index > maxLength ) {
             throw new IllegalArgumentException("Invalid touch index " + index);
         }
     }
