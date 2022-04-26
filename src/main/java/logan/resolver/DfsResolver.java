@@ -7,23 +7,22 @@ import logan.model.GameStatus;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class FireGameResolver {
+public class DfsResolver extends AbstractResolver {
 
     private final Deque<GameStatus> stack;
     private final int               expectStackLength;
     private       GameStatus        bestResolver;
 
-    private FireGameResolver (int expectStackLength) {
+    public DfsResolver (int expectStackLength) {
         this.stack = new LinkedList<>();
         this.expectStackLength = expectStackLength;
     }
 
-    public static void solve (GameStatus gameStatus, int expectStackLength) {
-        var resolver = new FireGameResolver(expectStackLength);
-        resolver.stack.add(gameStatus);
-        resolver.solve();
+    protected void solve (GameStatus gameStatus, int expectStackLength) {
+        stack.add(gameStatus);
+        solve();
         if ( log.isInfoEnabled() ) {
-            resolver.logResult();
+            logResult();
         }
     }
 
