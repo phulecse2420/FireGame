@@ -18,7 +18,7 @@ public class FireGameApplication {
         var expectStackLength = 20;
         var performanceHelper = new PerformanceHelper(times);
         performanceHelper.executeTest(() -> {
-            var resolver = new DfsResolver(expectStackLength);
+            var resolver = new DfsResolver();
             return resolver.execute(gameStatus.build(), expectStackLength);
         });
     }
