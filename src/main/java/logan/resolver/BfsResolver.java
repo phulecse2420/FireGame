@@ -1,23 +1,24 @@
 package logan.resolver;
 
-import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Queue;
 
 import logan.model.GameStatus;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class DfsResolver extends Resolver {
+public class BfsResolver extends Resolver {
 
-    private final Deque<GameStatus> stack;
+    private final Queue<GameStatus> queue;
 
-    public DfsResolver () {
-        this.stack = new LinkedList<>();
+    public BfsResolver () {
+        this.queue = new LinkedList<>();
     }
 
-    protected void solve (GameStatus gameStatus, int expectStackLength) {
-        this.expectedMovesNumber = expectStackLength;
-        stack.add(gameStatus);
+    @Override
+    protected void solve (GameStatus gameStatus, int expectedMovesNumber) {
+        this.expectedMovesNumber = expectedMovesNumber;
+        queue.offer(gameStatus);
         solve();
         if ( log.isInfoEnabled() ) {
             logResult();
@@ -25,8 +26,8 @@ public class DfsResolver extends Resolver {
     }
 
     private void solve () {
-        while ( !stack.isEmpty() ) {
-            var status = stack.pop();
+        while ( !queue.isEmpty() ) {
+            var status = queue.poll();
             if ( status.isFinish() ) {
                 if ( getExpectStackLength(bestResolver) > status.getStackLength() ) {
                     bestResolver = status;
@@ -34,10 +35,10 @@ public class DfsResolver extends Resolver {
                 }
             }
             else if ( getExpectStackLength(bestResolver) > status.getStackLength() + 1 ) {
-                status.generateChildren().forEach(this.stack::push);
+                status.generateChildren().forEach(this.queue::offer);
             }
-
         }
     }
+
 
 }

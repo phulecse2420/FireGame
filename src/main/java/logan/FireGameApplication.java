@@ -1,6 +1,7 @@
 package logan;
 
 import logan.model.GameStatus;
+import logan.resolver.BfsResolver;
 import logan.resolver.DfsResolver;
 import logan.util.PerformanceHelper;
 import lombok.AccessLevel;
@@ -13,13 +14,13 @@ public class FireGameApplication {
 
     public static void main (String[] args) {
         var gameStatus = GameStatus.builder().input(
-            new boolean[] { false, false, false, false, false, false, false, false, false });
+            new boolean[] { false, true, false, true, true, false, true, true});
         var times             = 1;
-        var expectStackLength = 20;
+        var expectStackLength = 15;
         var performanceHelper = new PerformanceHelper(times);
         performanceHelper.executeTest(() -> {
-            var resolver = new DfsResolver();
-            return resolver.execute(gameStatus.build(), expectStackLength);
+            var resolver = new BfsResolver();
+            return resolver.execute(gameStatus.build(), expectStackLength).getRuntime();
         });
     }
 

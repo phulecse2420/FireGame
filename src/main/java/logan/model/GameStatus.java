@@ -3,10 +3,8 @@ package logan.model;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.IntStream;
 
 import lombok.Builder;
@@ -14,7 +12,7 @@ import lombok.Getter;
 
 public class GameStatus {
 
-    private static final String BORDER    = "\n==================================================================";
+    private static final String BORDER = "\n==================================================================";
     private static       int    maxLength;
 
     private final List<Boolean> fires;
@@ -22,19 +20,17 @@ public class GameStatus {
     private final Integer       step;
     @Getter
     private final int           stackLength;
-    private final Set<Integer>  checkedHash;
 
     private GameStatus () {
-        this(new ArrayList<>(maxLength), null, null, 0, new HashSet<>());
+        this(new ArrayList<>(maxLength), null, null, 0);
     }
 
-    public GameStatus (List<Boolean> fires, GameStatus parent, Integer step, int stackLength,
-                       Set<Integer> checkedHash) {
+    public GameStatus (List<Boolean> fires, GameStatus parent, Integer step, int stackLength
+    ) {
         this.fires = fires;
         this.parent = parent;
         this.step = step;
         this.stackLength = stackLength;
-        this.checkedHash = checkedHash;
     }
 
     private GameStatus (GameStatus parent, int step) {
@@ -42,7 +38,6 @@ public class GameStatus {
         this.fires = new ArrayList<>(parent.fires);
         this.step = step;
         this.stackLength = parent.stackLength + 1;
-        this.checkedHash = new HashSet<>(parent.checkedHash);
     }
 
     @Builder
@@ -55,7 +50,6 @@ public class GameStatus {
         for (int i = 0; i < maxLength; i++) {
             gameStatus.fires.add(input[i]);
         }
-        gameStatus.checkedHash.add(gameStatus.hashCode());
         return gameStatus;
     }
 
@@ -89,9 +83,21 @@ public class GameStatus {
         return IntStream.rangeClosed(1, maxLength).mapToObj(index -> {
             var child = new GameStatus(this, index);
             child.touch(index);
-            child.checkedHash.add(child.hashCode());
             return child;
-        }).filter(child -> !this.checkedHash.contains(child.hashCode())).collect(toList());
+        }).filter(child -> isNotExistInSolutionPath(child.hashCode())).collect(toList());
+    }
+
+    private boolean isNotExistInSolutionPath (int childHashCode) {
+        var result   = true;
+        var ancestor = this.parent;
+        while ( null != ancestor ) {
+            if ( ancestor.hashCode() == childHashCode ) {
+                result = false;
+                break;
+            }
+            ancestor = ancestor.parent;
+        }
+        return result;
     }
 
     private void touch (int index) {
