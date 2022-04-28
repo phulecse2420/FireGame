@@ -11,8 +11,9 @@ public class BfsResolver extends Resolver {
 
     private final Queue<GameStatus> queue;
 
-    public BfsResolver () {
+    BfsResolver () {
         this.queue = new LinkedList<>();
+        this.type = ResolverType.BFS;
     }
 
     @Override

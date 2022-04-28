@@ -8,14 +8,15 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class Resolver {
 
     protected int        expectedMovesNumber;
+    protected ResolverType type;
     protected GameStatus bestResolver;
 
     public GameResult execute (GameStatus gameStatus, int expectedMovesNumber) {
-        log.info("Fire Game start...");
+        log.info("{} resolver starts...", type);
         var startTimestamp = System.currentTimeMillis();
         solve(gameStatus, expectedMovesNumber);
         var runtime = System.currentTimeMillis() - startTimestamp;
-        log.info("Fire Game end in [{}] ms.", runtime);
+        log.info("{} resolver ends in [{}] ms.", type, runtime);
         return new GameResult(bestResolver, runtime);
     }
 

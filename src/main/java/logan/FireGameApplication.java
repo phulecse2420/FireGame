@@ -3,6 +3,8 @@ package logan;
 import logan.model.GameStatus;
 import logan.resolver.BfsResolver;
 import logan.resolver.DfsResolver;
+import logan.resolver.ResolverFactory;
+import logan.resolver.ResolverType;
 import logan.util.PerformanceHelper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -19,7 +21,7 @@ public class FireGameApplication {
         var expectStackLength = 15;
         var performanceHelper = new PerformanceHelper(times);
         performanceHelper.executeTest(() -> {
-            var resolver = new BfsResolver();
+            var resolver = ResolverFactory.createResolver(ResolverType.DFS);
             return resolver.execute(gameStatus.build(), expectStackLength).getRuntime();
         });
     }

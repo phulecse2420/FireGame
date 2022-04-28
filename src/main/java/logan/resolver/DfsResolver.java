@@ -11,8 +11,9 @@ public class DfsResolver extends Resolver {
 
     private final Deque<GameStatus> stack;
 
-    public DfsResolver () {
+    DfsResolver () {
         this.stack = new LinkedList<>();
+        this.type = ResolverType.DFS;
     }
 
     protected void solve (GameStatus gameStatus, int expectStackLength) {
@@ -34,7 +35,7 @@ public class DfsResolver extends Resolver {
                 }
             }
             else if ( getExpectStackLength(bestResolver) > status.getStackLength() + 1 ) {
-                status.generateChildren().forEach(this.stack::push);
+                status. generateChildren().forEach(this.stack::push);
             }
 
         }
