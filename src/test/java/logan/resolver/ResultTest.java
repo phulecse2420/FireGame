@@ -1,6 +1,7 @@
 package logan.resolver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
 
@@ -22,6 +23,7 @@ class ResultTest {
         Arrays.stream(ResolverType.values()).forEach(type -> {
             var resolver = ResolverFactory.createResolver(type);
             var result   = resolver.execute(gameStatus, EXPECT_MOVES);
+            assertNotNull(result.getBestGameStatus());
             assertEquals(bestResultMoves, result.getBestGameStatus().getMoves());
         });
     }

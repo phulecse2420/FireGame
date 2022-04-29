@@ -20,7 +20,15 @@ public abstract class Resolver {
         return new GameResult(bestResolver, runtime);
     }
 
-    protected abstract void solve (GameStatus gameStatus, int expectedMovesNumber);
+    protected void solve (GameStatus gameStatus, int expectedMovesNumber) {
+        this.expectedMovesNumber = expectedMovesNumber;
+        solve();
+        if ( log.isInfoEnabled() ) {
+            logResult();
+        }
+    }
+
+    abstract void solve();
 
     protected int getExpectMoves (GameStatus bestResolver) {
         if ( null == bestResolver ) {

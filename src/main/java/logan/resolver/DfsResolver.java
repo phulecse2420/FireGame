@@ -16,16 +16,12 @@ class DfsResolver extends Resolver {
         this.type = ResolverType.DFS;
     }
 
-    protected void solve (GameStatus gameStatus, int expectStackLength) {
-        this.expectedMovesNumber = expectStackLength;
+    protected void solve (GameStatus gameStatus, int expectedMovesNumber) {
         stack.add(gameStatus);
-        solve();
-        if ( log.isInfoEnabled() ) {
-            logResult();
-        }
+        super.solve(gameStatus, expectedMovesNumber);
     }
 
-    private void solve () {
+    void solve () {
         while ( !stack.isEmpty() ) {
             var status = stack.pop();
             if ( status.isFinish() ) {

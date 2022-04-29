@@ -22,15 +22,11 @@ class BfsResolver extends Resolver {
 
     @Override
     protected void solve (GameStatus gameStatus, int expectedMovesNumber) {
-        this.expectedMovesNumber = expectedMovesNumber;
         queue.offer(gameStatus);
-        solve();
-        if ( log.isInfoEnabled() ) {
-            logResult();
-        }
+        super.solve(gameStatus, expectedMovesNumber);
     }
 
-    private void solve () {
+    void solve () {
         while ( !queue.isEmpty() ) {
             var status = queue.poll();
             if ( status.isFinish() ) {
