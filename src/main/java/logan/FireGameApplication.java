@@ -16,12 +16,12 @@ public class FireGameApplication {
 
     public static void main (String[] args) {
         var gameStatus = GameStatus.builder().input(
-            new boolean[] { false, true, false, true, true, false, true, true});
+            new boolean[] { false, false, false, false, false, false, false, false, false, false});
         var times             = 1;
         var expectStackLength = 15;
         var performanceHelper = new PerformanceHelper(times);
         performanceHelper.executeTest(() -> {
-            var resolver = ResolverFactory.createResolver(ResolverType.DFS);
+            var resolver = ResolverFactory.createResolver(ResolverType.BFS);
             return resolver.execute(gameStatus.build(), expectStackLength).getRuntime();
         });
     }
