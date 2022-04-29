@@ -1,48 +1,36 @@
 package logan.model;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.Arrays;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameStatus {
 
-    private static final String BORDER    = "\n==================================================================";
+    private static final String BORDER = "\n==================================================================";
     private static       int    maxLength;
 
-    private final List<Boolean> fires;
-    private final GameStatus    parent;
-    private final Integer       step;
+    private final boolean[]  fires;
+    private final GameStatus parent;
+    private final Integer    step;
     @Getter
-    private final int           stackLength;
-    private final Set<Integer>  checkedHash;
+    private final int        moves;
+    private       Integer    hashCode;
 
-    private GameStatus () {
-        this(new ArrayList<>(maxLength), null, null, 0, new HashSet<>());
-    }
-
-    public GameStatus (List<Boolean> fires, GameStatus parent, Integer step, int stackLength,
-                       Set<Integer> checkedHash) {
-        this.fires = fires;
-        this.parent = parent;
-        this.step = step;
-        this.stackLength = stackLength;
-        this.checkedHash = checkedHash;
+    private GameStatus (boolean[] fires) {
+        this(fires, null, null, 0);
     }
 
     private GameStatus (GameStatus parent, int step) {
         this.parent = parent;
-        this.fires = new ArrayList<>(parent.fires);
+        this.fires = Arrays.copyOf(parent.fires, parent.fires.length);
         this.step = step;
-        this.stackLength = parent.stackLength + 1;
-        this.checkedHash = new HashSet<>(parent.checkedHash);
+        this.moves = parent.moves + 1;
     }
 
     @Builder
@@ -51,16 +39,16 @@ public class GameStatus {
             throw new IllegalArgumentException("Invalid input");
         }
         maxLength = input.length;
-        var gameStatus = new GameStatus();
-        for (int i = 0; i < maxLength; i++) {
-            gameStatus.fires.add(input[i]);
-        }
-        gameStatus.checkedHash.add(gameStatus.hashCode());
-        return gameStatus;
+        return new GameStatus(input);
     }
 
     public boolean isFinish () {
-        return fires.stream().allMatch(fire -> fire);
+        for (var fire : fires) {
+            if ( !fire ) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -72,26 +60,45 @@ public class GameStatus {
             return false;
         }
         GameStatus that = (GameStatus) o;
-        return fires.equals(that.fires);
+        return Arrays.equals(fires, that.fires);
     }
 
     @Override
     public int hashCode () {
-        return Objects.hash(fires);
+        if ( null == hashCode ) {
+            hashCode = Arrays.hashCode(fires);
+        }
+        return hashCode;
     }
 
     @Override
     public String toString () {
-        return fires.toString();
+        return Arrays.toString(fires);
     }
 
-    public List<GameStatus> generateChildren () {
+    public Stream<GameStatus> generateChildren () {
+        return generateChildrenWithoutCheckSolutionPath().filter(child -> isNotExistInSolutionPath(child.hashCode()));
+    }
+
+    public Stream<GameStatus> generateChildrenWithoutCheckSolutionPath () {
         return IntStream.rangeClosed(1, maxLength).mapToObj(index -> {
             var child = new GameStatus(this, index);
             child.touch(index);
-            child.checkedHash.add(child.hashCode());
             return child;
-        }).filter(child -> !this.checkedHash.contains(child.hashCode())).collect(toList());
+        });
+    }
+
+    private boolean isNotExistInSolutionPath (int childHashCode) {
+        var result   = true;
+        var ancestor = this.parent;
+        while ( null != ancestor ) {
+            if ( ancestor.hashCode() == childHashCode ) {
+                result = false;
+                break;
+            }
+            ancestor = ancestor.parent;
+        }
+        return result;
     }
 
     private void touch (int index) {
@@ -122,8 +129,7 @@ public class GameStatus {
     private void invert (int index) {
         validateIndex(index);
         synchronized (fires) {
-            var newStatus = !fires.get(index - 1);
-            fires.set(index - 1, newStatus);
+            fires[index - 1] = !fires[index - 1];
         }
     }
 
@@ -135,7 +141,7 @@ public class GameStatus {
 
     public String generateResolveTrace () {
         var sb = new StringBuilder();
-        sb.append(BORDER).append("\n0    ").append(fires).append("    ").append(step);
+        sb.append(BORDER).append("\n0    ").append(Arrays.toString(fires)).append("    ").append(step);
         if ( null != parent ) {
             parent.generateResolveTrace(sb, 1);
         }
@@ -146,7 +152,7 @@ public class GameStatus {
     }
 
     private void generateResolveTrace (StringBuilder sb, int index) {
-        sb.append('\n').append(index).append("    ").append(fires).append("    ").append(step);
+        sb.append('\n').append(index).append("    ").append(Arrays.toString(fires)).append("    ").append(step);
         if ( null != parent ) {
             parent.generateResolveTrace(sb, index + 1);
         }
