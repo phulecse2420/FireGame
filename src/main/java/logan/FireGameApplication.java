@@ -14,8 +14,10 @@ public class FireGameApplication {
 
     public static void main (String[] args) {
         var gameStatus = GameStatus.builder().input(
-            new boolean[] { false, false, false, false, false, false, false, false, false, false });
-        var times             = 10;
+            new boolean[] {
+                false, false, false, false, false, false, false, false, false, false, false, false, false
+            });
+        var times = 1;
         var expectStackLength = 15;
         var performanceHelper = new PerformanceHelper(times);
         performanceHelper.executeTest(() -> {

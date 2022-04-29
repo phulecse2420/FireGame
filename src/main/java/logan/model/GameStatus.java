@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -82,12 +83,16 @@ public class GameStatus {
         return fires.toString();
     }
 
-    public List<GameStatus> generateChildren () {
+    public Stream<GameStatus> generateChildren () {
+        return generateChildrenWithoutCheckSolutionPath().filter(child -> isNotExistInSolutionPath(child.hashCode()));
+    }
+
+    public Stream<GameStatus> generateChildrenWithoutCheckSolutionPath () {
         return IntStream.rangeClosed(1, maxLength).mapToObj(index -> {
             var child = new GameStatus(this, index);
             child.touch(index);
             return child;
-        }).filter(child -> isNotExistInSolutionPath(child.hashCode())).collect(toList());
+        });
     }
 
     private boolean isNotExistInSolutionPath (int childHashCode) {
