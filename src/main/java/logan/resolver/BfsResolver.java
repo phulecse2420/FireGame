@@ -37,7 +37,7 @@ class BfsResolver extends Resolver {
             }
             else if ( getExpectMoves(bestResolver) > status.getMoves() + 1 ) {
                 status.generateChildrenWithoutCheckSolutionPath()
-                      .filter(g -> checkedStatus.add(g.hashCode()))
+                      .filter(c -> checkedStatus.add(c.hashCode()))
                       .forEach(this.queue::offer);
             }
         }

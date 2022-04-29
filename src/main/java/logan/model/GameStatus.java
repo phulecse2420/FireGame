@@ -15,14 +15,14 @@ public class GameStatus {
     private static final String BORDER = "\n==================================================================";
     private static       int    maxLength;
 
-    private final Boolean[]  fires;
+    private final boolean[]  fires;
     private final GameStatus parent;
     private final Integer    step;
     @Getter
     private final int        moves;
     private       Integer    hashCode;
 
-    private GameStatus (Boolean[] fires) {
+    private GameStatus (boolean[] fires) {
         this(fires, null, null, 0);
     }
 
@@ -34,7 +34,7 @@ public class GameStatus {
     }
 
     @Builder
-    public static GameStatus initGameStatus (Boolean[] input) {
+    public static GameStatus initGameStatus (boolean[] input) {
         if ( null == input ) {
             throw new IllegalArgumentException("Invalid input");
         }
@@ -43,7 +43,12 @@ public class GameStatus {
     }
 
     public boolean isFinish () {
-        return Arrays.stream(fires).allMatch(f -> f);
+        for (var fire : fires) {
+            if ( !fire ) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
