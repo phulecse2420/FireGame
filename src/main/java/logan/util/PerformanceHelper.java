@@ -19,11 +19,11 @@ public class PerformanceHelper {
 
     public void executeTest (LongSupplier longSupplier) {
         for (int i = 0; i < times; i++) {
-            executeTimes.add(longSupplier.getAsLong());
             if ( times > 1 ) {
                 log.warn("Test time [{}]", i);
                 System.gc();
             }
+            executeTimes.add(longSupplier.getAsLong());
         }
         if ( times > 1 ) {
             log.warn("Min [{}] ms", executeTimes.stream().mapToLong(i -> i).min().orElse(0));

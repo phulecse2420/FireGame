@@ -34,12 +34,12 @@ class BfsResolver extends Resolver {
         while ( !queue.isEmpty() ) {
             var status = queue.poll();
             if ( status.isFinish() ) {
-                if ( getExpectStackLength(bestResolver) > status.getStackLength() ) {
+                if ( getExpectMoves(bestResolver) > status.getMoves() ) {
                     bestResolver = status;
-                    log.info("Find a better solution with [{}] moves.", status.getStackLength());
+                    log.info("Find a better solution with [{}] moves.", status.getMoves());
                 }
             }
-            else if ( getExpectStackLength(bestResolver) > status.getStackLength() + 1 ) {
+            else if ( getExpectMoves(bestResolver) > status.getMoves() + 1 ) {
                 status.generateChildren().stream()
                       .filter(g -> checkedStatus.add(g.hashCode()))
                       .forEach(this.queue::offer);

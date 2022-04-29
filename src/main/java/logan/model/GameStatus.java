@@ -19,26 +19,25 @@ public class GameStatus {
     private final GameStatus    parent;
     private final Integer       step;
     @Getter
-    private final int           stackLength;
+    private final int           moves;
     private       Integer       hashCode;
 
     private GameStatus () {
         this(new ArrayList<>(maxLength), null, null, 0);
     }
 
-    public GameStatus (List<Boolean> fires, GameStatus parent, Integer step, int stackLength
-    ) {
+    public GameStatus (List<Boolean> fires, GameStatus parent, Integer step, int moves) {
         this.fires = fires;
         this.parent = parent;
         this.step = step;
-        this.stackLength = stackLength;
+        this.moves = moves;
     }
 
     private GameStatus (GameStatus parent, int step) {
         this.parent = parent;
         this.fires = new ArrayList<>(parent.fires);
         this.step = step;
-        this.stackLength = parent.stackLength + 1;
+        this.moves = parent.moves + 1;
     }
 
     @Builder
@@ -55,7 +54,7 @@ public class GameStatus {
     }
 
     public boolean isFinish () {
-        return fires.stream().allMatch(fire -> fire);
+        return fires.stream().allMatch(f -> f);
     }
 
     @Override

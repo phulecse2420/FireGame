@@ -22,7 +22,7 @@ class ResultTest {
         Arrays.stream(ResolverType.values()).forEach(type -> {
             var resolver = ResolverFactory.createResolver(type);
             var result   = resolver.execute(gameStatus, EXPECT_MOVES);
-            assertEquals(bestResultMoves, result.getBestGameStatus().getStackLength());
+            assertEquals(bestResultMoves, result.getBestGameStatus().getMoves());
         });
     }
 

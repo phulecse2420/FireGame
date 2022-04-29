@@ -22,11 +22,11 @@ public abstract class Resolver {
 
     protected abstract void solve (GameStatus gameStatus, int expectedMovesNumber);
 
-    protected int getExpectStackLength (GameStatus bestResolver) {
+    protected int getExpectMoves (GameStatus bestResolver) {
         if ( null == bestResolver ) {
             return expectedMovesNumber;
         }
-        return bestResolver.getStackLength();
+        return bestResolver.getMoves();
     }
 
     protected void logResult () {
