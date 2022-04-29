@@ -15,7 +15,7 @@ class ResultTest {
 
     @Test
     void noMoveTest () {
-        var gameStatus = GameStatus.initGameStatus(new boolean[] { true, true, true, true, true });
+        var gameStatus = GameStatus.initGameStatus(new Boolean[] { true, true, true, true, true });
         executeTest(gameStatus, 0);
     }
 
@@ -30,27 +30,27 @@ class ResultTest {
 
     @Test
     void oneMoveTest () {
-        var gameStatus = GameStatus.initGameStatus(new boolean[] { false, false, false, true, true });
+        var gameStatus = GameStatus.initGameStatus(new Boolean[] { false, false, false, true, true });
         executeTest(gameStatus, 1);
     }
 
     @Test
     void eightFiresTest () {
-        var gameStatus = GameStatus.initGameStatus(new boolean[] { false, true, false, true, true, false, true, true });
+        var gameStatus = GameStatus.initGameStatus(new Boolean[] { false, true, false, true, true, false, true, true });
         executeTest(gameStatus, 5);
     }
 
     @Test
     void tenFiresTest1 () {
         var gameStatus = GameStatus.initGameStatus(
-            new boolean[] { false, true, false, true, true, false, true, true, true, true });
+            new Boolean[] { false, true, false, true, true, false, true, true, true, true });
         executeTest(gameStatus, 5);
     }
 
     @Test
     void tenFiresTest2 () {
         var gameStatus = GameStatus.initGameStatus(
-            new boolean[] { false, false, false, false, false, false, false, false, false, false });
+            new Boolean[] { false, false, false, false, false, false, false, false, false, false });
         executeTest(gameStatus, 10);
     }
 }

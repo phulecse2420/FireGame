@@ -14,7 +14,7 @@ public class FireGameApplication {
 
     public static void main (String[] args) {
         var gameStatus = GameStatus.builder().input(
-            new boolean[] {
+            new Boolean[] {
                 false, false, false, false, false, false, false, false, false, false, false, false, false
             });
         var times = 1;

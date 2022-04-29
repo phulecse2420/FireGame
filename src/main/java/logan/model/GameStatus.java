@@ -1,61 +1,49 @@
 package logan.model;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameStatus {
 
     private static final String BORDER = "\n==================================================================";
     private static       int    maxLength;
 
-    private final List<Boolean> fires;
-    private final GameStatus    parent;
-    private final Integer       step;
+    private final Boolean[]  fires;
+    private final GameStatus parent;
+    private final Integer    step;
     @Getter
-    private final int           moves;
-    private       Integer       hashCode;
+    private final int        moves;
+    private       Integer    hashCode;
 
-    private GameStatus () {
-        this(new ArrayList<>(maxLength), null, null, 0);
-    }
-
-    public GameStatus (List<Boolean> fires, GameStatus parent, Integer step, int moves) {
-        this.fires = fires;
-        this.parent = parent;
-        this.step = step;
-        this.moves = moves;
+    private GameStatus (Boolean[] fires) {
+        this(fires, null, null, 0);
     }
 
     private GameStatus (GameStatus parent, int step) {
         this.parent = parent;
-        this.fires = new ArrayList<>(parent.fires);
+        this.fires = Arrays.copyOf(parent.fires, parent.fires.length);
         this.step = step;
         this.moves = parent.moves + 1;
     }
 
     @Builder
-    public static GameStatus initGameStatus (boolean[] input) {
+    public static GameStatus initGameStatus (Boolean[] input) {
         if ( null == input ) {
             throw new IllegalArgumentException("Invalid input");
         }
         maxLength = input.length;
-        var gameStatus = new GameStatus();
-        for (int i = 0; i < maxLength; i++) {
-            gameStatus.fires.add(input[i]);
-        }
-        return gameStatus;
+        return new GameStatus(input);
     }
 
     public boolean isFinish () {
-        return fires.stream().allMatch(f -> f);
+        return Arrays.stream(fires).allMatch(f -> f);
     }
 
     @Override
@@ -67,20 +55,20 @@ public class GameStatus {
             return false;
         }
         GameStatus that = (GameStatus) o;
-        return fires.equals(that.fires);
+        return Arrays.equals(fires, that.fires);
     }
 
     @Override
     public int hashCode () {
         if ( null == hashCode ) {
-            hashCode = Objects.hash(fires);
+            hashCode = Arrays.hashCode(fires);
         }
         return hashCode;
     }
 
     @Override
     public String toString () {
-        return fires.toString();
+        return Arrays.toString(fires);
     }
 
     public Stream<GameStatus> generateChildren () {
@@ -136,8 +124,7 @@ public class GameStatus {
     private void invert (int index) {
         validateIndex(index);
         synchronized (fires) {
-            var newStatus = !fires.get(index - 1);
-            fires.set(index - 1, newStatus);
+            fires[index - 1] = !fires[index - 1];
         }
     }
 
@@ -149,7 +136,7 @@ public class GameStatus {
 
     public String generateResolveTrace () {
         var sb = new StringBuilder();
-        sb.append(BORDER).append("\n0    ").append(fires).append("    ").append(step);
+        sb.append(BORDER).append("\n0    ").append(Arrays.toString(fires)).append("    ").append(step);
         if ( null != parent ) {
             parent.generateResolveTrace(sb, 1);
         }
@@ -160,7 +147,7 @@ public class GameStatus {
     }
 
     private void generateResolveTrace (StringBuilder sb, int index) {
-        sb.append('\n').append(index).append("    ").append(fires).append("    ").append(step);
+        sb.append('\n').append(index).append("    ").append(Arrays.toString(fires)).append("    ").append(step);
         if ( null != parent ) {
             parent.generateResolveTrace(sb, index + 1);
         }
