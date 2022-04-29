@@ -1,8 +1,6 @@
 package logan;
 
 import logan.model.GameStatus;
-import logan.resolver.BfsResolver;
-import logan.resolver.DfsResolver;
 import logan.resolver.ResolverFactory;
 import logan.resolver.ResolverType;
 import logan.util.PerformanceHelper;

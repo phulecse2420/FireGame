@@ -20,6 +20,7 @@ public class GameStatus {
     private final Integer       step;
     @Getter
     private final int           stackLength;
+    private       Integer       hashCode;
 
     private GameStatus () {
         this(new ArrayList<>(maxLength), null, null, 0);
@@ -71,7 +72,10 @@ public class GameStatus {
 
     @Override
     public int hashCode () {
-        return Objects.hash(fires);
+        if ( null == hashCode ) {
+            hashCode = Objects.hash(fires);
+        }
+        return hashCode;
     }
 
     @Override

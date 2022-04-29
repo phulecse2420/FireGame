@@ -9,7 +9,7 @@ import logan.model.GameStatus;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class BfsResolver extends Resolver {
+class BfsResolver extends Resolver {
 
     private final Queue<GameStatus> queue;
     private final Set<Integer>      checkedStatus;
@@ -41,8 +41,8 @@ public class BfsResolver extends Resolver {
             }
             else if ( getExpectStackLength(bestResolver) > status.getStackLength() + 1 ) {
                 status.generateChildren().stream()
-                                         .filter(g -> checkedStatus.add(g.hashCode()))
-                                         .forEach(this.queue::offer);
+                      .filter(g -> checkedStatus.add(g.hashCode()))
+                      .forEach(this.queue::offer);
             }
         }
     }

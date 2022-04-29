@@ -7,7 +7,7 @@ import logan.model.GameStatus;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class DfsResolver extends Resolver {
+class DfsResolver extends Resolver {
 
     private final Deque<GameStatus> stack;
 
@@ -35,7 +35,7 @@ public class DfsResolver extends Resolver {
                 }
             }
             else if ( getExpectStackLength(bestResolver) > status.getStackLength() + 1 ) {
-                status. generateChildren().forEach(this.stack::push);
+                status.generateChildren().forEach(this.stack::push);
             }
 
         }

@@ -12,11 +12,11 @@ public abstract class Resolver {
     protected GameStatus bestResolver;
 
     public GameResult execute (GameStatus gameStatus, int expectedMovesNumber) {
-        log.info("{} resolver starts...", type);
+        log.info("[{}] resolver starts...", type);
         var startTimestamp = System.currentTimeMillis();
         solve(gameStatus, expectedMovesNumber);
         var runtime = System.currentTimeMillis() - startTimestamp;
-        log.info("{} resolver ends in [{}] ms.", type, runtime);
+        log.info("[{}] resolver ends in [{}] ms.", type, runtime);
         return new GameResult(bestResolver, runtime);
     }
 
