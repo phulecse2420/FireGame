@@ -9,12 +9,12 @@ Configuration:
 
   Loggers:
     Root:
-      level: warn
+      level: info
       AppenderRef:
         ref: Console_Appender
     logger:
       - name: logan
-        level: info
+        level: debug
         additivity: false
         AppenderRef:
           ref: Console_Appender

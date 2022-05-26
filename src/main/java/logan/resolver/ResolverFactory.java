@@ -12,6 +12,8 @@ public class ResolverFactory {
                 return new DfsResolver();
             case BFS:
                 return new BfsResolver();
+            case DIJKSTRA:
+                return new DijkstraResolver();
             default:
                 throw new IllegalArgumentException("Resolver type " + type + " is not supported!");
         }

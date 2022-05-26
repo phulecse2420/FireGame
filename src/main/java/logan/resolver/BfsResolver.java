@@ -6,6 +6,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import logan.model.GameStatus;
+import logan.utils.RangeUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -21,27 +22,45 @@ class BfsResolver extends Resolver {
     }
 
     @Override
-    protected void solve (GameStatus gameStatus, int expectedMovesNumber) {
+    protected void solve (GameStatus gameStatus) {
+        RangeUtil.init(gameStatus.getFires().length);
         queue.offer(gameStatus);
-        super.solve(gameStatus, expectedMovesNumber);
+        super.solve(gameStatus);
     }
 
     void solve () {
         while ( !queue.isEmpty() ) {
             var status = queue.poll();
             if ( status.isFinish() ) {
-                if ( getExpectMoves(bestResolver) > status.getMoves() ) {
+                if ( isBetterStatus(status) ) {
                     bestResolver = status;
-                    log.info("Find a better solution with [{}] moves.", status.getMoves());
+                    log.info("Find a better solution with cost [{}] move [{}].", status.getCost(), status.getMoves());
                 }
             }
-            else if ( getExpectMoves(bestResolver) > status.getMoves() + 1 ) {
-                status.generateChildrenWithoutCheckSolutionPath()
-                      .filter(c -> checkedStatus.add(c.hashCode()))
-                      .forEach(this.queue::offer);
+            else {
+                status.generateChildren().filter(c -> checkedStatus.add(c.hashCode())).forEach(this.queue::offer);
             }
         }
     }
 
+    private boolean isBetterStatus (GameStatus status) {
+        if ( null != bestResolver ) {
+            if ( bestResolver.getCost() > status.getCost() ) {
+                return true;
+            }
+            else if ( bestResolver.getCost() == status.getCost() ) {
+                return bestResolver.getMoves() > status.getMoves();
+            }
+        }
+        else {
+            if ( expectedCost > status.getCost() ) {
+                return true;
+            }
+            else if ( expectedCost == status.getCost() ) {
+                return expectedMovesNumber > status.getMoves();
+            }
+        }
+        return false;
+    }
 
 }
