@@ -1,6 +1,7 @@
 package logan.model;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import logan.utils.RangeUtil;
@@ -12,9 +13,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameStatus {
-
-    private static final String BORDER = "\n==================================================================";
-    private static       int    maxLength;
 
     @Getter
     private final boolean[]  fires;
@@ -43,7 +41,6 @@ public class GameStatus {
         if ( null == fires ) {
             throw new IllegalArgumentException("Invalid input");
         }
-        maxLength = fires.length;
         return new GameStatus(fires);
     }
 
@@ -107,7 +104,7 @@ public class GameStatus {
     }
 
     public Stream<GameStatus> generateChildrenWithoutCheckSolutionPath () {
-        return RangeUtil.getStream().map(index -> {
+        return RangeUtil.getStream().filter(i -> i != step).map(index -> {
             var childFires = TouchHelper.touch(index, fires);
             return new GameStatus(this, index, childFires);
         });
@@ -126,4 +123,13 @@ public class GameStatus {
         return result;
     }
 
+    public static boolean compare (GameStatus a, GameStatus b) {
+        if ( a.getCost() > b.getCost() ) {
+            return true;
+        }
+        else if ( a.getCost() == b.getCost() ) {
+            return a.getMoves() > b.getMoves();
+        }
+        return false;
+    }
 }

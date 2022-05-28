@@ -48,27 +48,27 @@ class ResultTest {
     @Test
     void fiveFiresTest () {
         var gameStatus = GameStatus.initGameStatus(false, false, false, false, false);
-        executeTest(gameStatus, 5, 2);
+        executeTest(gameStatus, 5, 2, ResolverType.DFS);
         gameStatus = GameStatus.initGameStatus(true, false, false, false, false);
-        executeTest(gameStatus, 2, 2);
+        executeTest(gameStatus, 4, 1, ResolverType.DFS);
         gameStatus = GameStatus.initGameStatus(true, true, false, false, false);
-        executeTest(gameStatus, 2, 2);
+        executeTest(gameStatus, 1, 1, ResolverType.DFS);
         gameStatus = GameStatus.initGameStatus(true, false, true, false, false);
-        executeTest(gameStatus, 2, 2);
+        executeTest(gameStatus, 3, 1, ResolverType.DFS);
     }
 
     @Test
     void eightFiresTest () {
         var gameStatus = GameStatus.initGameStatus(false, true, false, true, true, false, true, true);
-        executeTest(gameStatus, 5, 0);
+        executeTest(gameStatus, 9, 1, ResolverType.DFS);
     }
 
     @Test
     void tenFiresTest () {
         var gameStatus = GameStatus.initGameStatus(false, true, false, true, true, false, true, true, true, true);
-        executeTest(gameStatus, 5, 0);
+        executeTest(gameStatus, 7, 1, ResolverType.DFS);
         gameStatus = GameStatus.initGameStatus(
             false, false, false, false, false, false, false, false, false, false);
-        executeTest(gameStatus, 10, 0);
+        executeTest(gameStatus, 10, 2, ResolverType.DFS);
     }
 }

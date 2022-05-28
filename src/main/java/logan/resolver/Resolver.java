@@ -48,4 +48,19 @@ public abstract class Resolver {
             log.info("No solution found.");
         }
     }
+
+    protected boolean isBetterStatus (GameStatus status) {
+        if ( null != bestResolver ) {
+            return GameStatus.compare(bestResolver, status);
+        }
+        else {
+            if ( expectedCost > status.getCost() ) {
+                return true;
+            }
+            else if ( expectedCost == status.getCost() ) {
+                return expectedMovesNumber > status.getMoves();
+            }
+        }
+        return false;
+    }
 }

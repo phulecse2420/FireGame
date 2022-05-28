@@ -1,7 +1,9 @@
 package logan.resolver;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -12,12 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class BfsResolver extends Resolver {
 
-    private final Queue<GameStatus> queue;
-    private final Set<Integer>      checkedStatus;
+    private final Queue<GameStatus>        queue;
+    private final Map<Integer, GameStatus> checkedStatus;
 
     BfsResolver () {
         this.queue = new LinkedList<>();
-        this.checkedStatus = new HashSet<>();
+        this.checkedStatus = new HashMap<>();
         this.type = ResolverType.BFS;
     }
 
@@ -31,6 +33,7 @@ class BfsResolver extends Resolver {
     void solve () {
         while ( !queue.isEmpty() ) {
             var status = queue.poll();
+            log.debug("Check... [{}] checkedStatus size [{}]", status.hashCode(), checkedStatus.size());
             if ( status.isFinish() ) {
                 if ( isBetterStatus(status) ) {
                     bestResolver = status;
@@ -38,30 +41,16 @@ class BfsResolver extends Resolver {
                 }
             }
             else {
-                status.generateChildrenWithoutCheckSolutionPath()
-                      .filter(c -> checkedStatus.add(c.hashCode()))
-                      .forEach(this.queue::offer);
+                status.generateChildren()
+                      .forEach(c -> {
+                          var current = checkedStatus.get(c.hashCode());
+                          if (null == current || GameStatus.compare(current, c)) {
+                              checkedStatus.put(c.hashCode(), c);
+                              queue.offer(c);
+                          }
+                      });
             }
         }
     }
 
-    private boolean isBetterStatus (GameStatus status) {
-        if ( null != bestResolver ) {
-            if ( bestResolver.getCost() > status.getCost() ) {
-                return true;
-            }
-            else if ( bestResolver.getCost() == status.getCost() ) {
-                return bestResolver.getMoves() > status.getMoves();
-            }
-        }
-        else {
-            if ( expectedCost > status.getCost() ) {
-                return true;
-            }
-            else if ( expectedCost == status.getCost() ) {
-                return expectedMovesNumber > status.getMoves();
-            }
-        }
-        return false;
-    }
 }
