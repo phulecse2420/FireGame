@@ -4,6 +4,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 import logan.model.GameStatus;
+import logan.utils.RangeUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -16,9 +17,11 @@ class DfsResolver extends Resolver {
         this.type = ResolverType.DFS;
     }
 
-    protected void solve (GameStatus gameStatus, int expectedMovesNumber) {
+    @Override
+    protected void solve (GameStatus gameStatus) {
+        RangeUtil.init(gameStatus.getFires().length);
         stack.add(gameStatus);
-        super.solve(gameStatus, expectedMovesNumber);
+        solve();
     }
 
     void solve () {
@@ -27,7 +30,7 @@ class DfsResolver extends Resolver {
             if ( status.isFinish() ) {
                 if ( getExpectMoves(bestResolver) > status.getMoves() ) {
                     bestResolver = status;
-                    log.info("Find a better solution with [{}] moves.", status.getMoves());
+                    log.info("Find a better solution with cost [{}] move [{}].", status.getCost(), status.getMoves());
                 }
             }
             else if ( getExpectMoves(bestResolver) > status.getMoves() + 1 ) {

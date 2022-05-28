@@ -1,4 +1,4 @@
-package logan.util;
+package logan.utils;
 
 public class FiresKeeper {
 }

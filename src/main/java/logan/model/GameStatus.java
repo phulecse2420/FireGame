@@ -1,9 +1,10 @@
 package logan.model;
 
 import java.util.Arrays;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import logan.utils.RangeUtil;
+import logan.utils.TouchHelper;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,31 +16,35 @@ public class GameStatus {
     private static final String BORDER = "\n==================================================================";
     private static       int    maxLength;
 
+    @Getter
     private final boolean[]  fires;
+    @Getter
     private final GameStatus parent;
+    @Getter
     private final Integer    step;
     @Getter
     private final int        moves;
+    protected     Integer    cost;
     private       Integer    hashCode;
 
     private GameStatus (boolean[] fires) {
         this(fires, null, null, 0);
     }
 
-    private GameStatus (GameStatus parent, int step) {
+    protected GameStatus (GameStatus parent, int step, boolean[] childFires) {
+        this.fires = childFires;
         this.parent = parent;
-        this.fires = Arrays.copyOf(parent.fires, parent.fires.length);
         this.step = step;
         this.moves = parent.moves + 1;
     }
 
     @Builder
-    public static GameStatus initGameStatus (boolean[] input) {
-        if ( null == input ) {
+    public static GameStatus initGameStatus (boolean... fires) {
+        if ( null == fires ) {
             throw new IllegalArgumentException("Invalid input");
         }
-        maxLength = input.length;
-        return new GameStatus(input);
+        maxLength = fires.length;
+        return new GameStatus(fires);
     }
 
     public boolean isFinish () {
@@ -49,6 +54,27 @@ public class GameStatus {
             }
         }
         return true;
+    }
+
+    public int getCost () {
+        if ( null == cost ) {
+            cost = calculateCost();
+        }
+        return cost;
+    }
+
+    private Integer calculateCost () {
+        if ( null == parent ) {
+            return 0;
+        }
+        return getStepCost() + parent.getCost();
+    }
+
+    public int getStepCost () {
+        if ( null == parent ) {
+            return 0;
+        }
+        return parent.fires[step - 1] ? 0 : 1;
     }
 
     @Override
@@ -81,10 +107,9 @@ public class GameStatus {
     }
 
     public Stream<GameStatus> generateChildrenWithoutCheckSolutionPath () {
-        return IntStream.rangeClosed(1, maxLength).mapToObj(index -> {
-            var child = new GameStatus(this, index);
-            child.touch(index);
-            return child;
+        return RangeUtil.getStream().map(index -> {
+            var childFires = TouchHelper.touch(index, fires);
+            return new GameStatus(this, index, childFires);
         });
     }
 
@@ -101,63 +126,4 @@ public class GameStatus {
         return result;
     }
 
-    private void touch (int index) {
-        validateIndex(index);
-        invert(index);
-        invert(getBeforeIndex(index));
-        invert(getNextIndex(index));
-    }
-
-    private int getNextIndex (int index) {
-        validateIndex(index);
-        var result = index + 1;
-        if ( result > maxLength ) {
-            result = result - maxLength;
-        }
-        return result;
-    }
-
-    private int getBeforeIndex (int index) {
-        validateIndex(index);
-        var result = index - 1;
-        if ( result < 1 ) {
-            result = result + maxLength;
-        }
-        return result;
-    }
-
-    private void invert (int index) {
-        validateIndex(index);
-        synchronized (fires) {
-            fires[index - 1] = !fires[index - 1];
-        }
-    }
-
-    private void validateIndex (int index) {
-        if ( index < 1 || index > maxLength ) {
-            throw new IllegalArgumentException("Invalid touch index " + index);
-        }
-    }
-
-    public String generateResolveTrace () {
-        var sb = new StringBuilder();
-        sb.append(BORDER).append("\n0    ").append(Arrays.toString(fires)).append("    ").append(step);
-        if ( null != parent ) {
-            parent.generateResolveTrace(sb, 1);
-        }
-        else {
-            sb.append(BORDER);
-        }
-        return sb.toString();
-    }
-
-    private void generateResolveTrace (StringBuilder sb, int index) {
-        sb.append('\n').append(index).append("    ").append(Arrays.toString(fires)).append("    ").append(step);
-        if ( null != parent ) {
-            parent.generateResolveTrace(sb, index + 1);
-        }
-        else {
-            sb.append(BORDER);
-        }
-    }
 }

@@ -1,4 +1,4 @@
-package logan.util;
+package logan.utils;
 
 import java.util.ArrayList;
 import java.util.List;
