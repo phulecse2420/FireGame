@@ -12,9 +12,9 @@ class DfsResolver extends Resolver {
 
     private final Deque<GameStatus> stack;
 
-    DfsResolver () {
+    DfsResolver (ResolverConfig config) {
+        super(config, ResolverType.DFS);
         this.stack = new LinkedList<>();
-        this.type = ResolverType.DFS;
     }
 
     @Override
@@ -29,11 +29,11 @@ class DfsResolver extends Resolver {
             var status = stack.pop();
             if ( status.isFinish() ) {
                 if ( isBetterStatus(status)) {
-                    bestResolver = status;
+                    setBestResolver(status);
                     log.info("Find a better solution with cost [{}] move [{}].", status.getCost(), status.getMoves());
                 }
             }
-            else if ( expectedMovesNumber >= status.getMoves() + 1 ) {
+            else if ( config.getMaxMoves() >= status.getMoves() + 1 ) {
                 status.generateChildren().filter(this::isBetterStatus).forEach(this.stack::push);
             }
 

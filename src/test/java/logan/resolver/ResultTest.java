@@ -12,14 +12,14 @@ import logan.model.GameStatus;
 
 class ResultTest {
 
-    private static final int EXPECT_MOVES = 10;
+    private static ResolverConfig CONFIG = ResolverConfig.builder().maxMoves(10).maxCost(10).numberOfResult(2).build();
 
     @Test
     void noSolutionFound () {
         var gameStatus = GameStatus.initGameStatus(false, false, true);
         Arrays.stream(ResolverType.values()).forEach(type -> {
-            var resolver = ResolverFactory.createResolver(type);
-            var result   = resolver.execute(gameStatus, EXPECT_MOVES);
+            var resolver = ResolverFactory.createResolver(type, CONFIG);
+            var result   = resolver.execute(gameStatus);
             assertNull(result.getBestGameStatus());
         });
     }
@@ -36,8 +36,8 @@ class ResultTest {
             Arrays.stream(ResolverType.values())
                   .filter(t -> Arrays.stream(skipTypes).allMatch(s -> s != t))
                   .forEach(type -> {
-                      var resolver = ResolverFactory.createResolver(type);
-                      var result   = resolver.execute(gameStatus, EXPECT_MOVES);
+                      var resolver = ResolverFactory.createResolver(type, CONFIG);
+                      var result   = resolver.execute(gameStatus);
                       assertNotNull(result.getBestGameStatus());
                       assertEquals(bestResultMoves, result.getBestGameStatus().getMoves());
                       assertEquals(bestCost, result.getBestGameStatus().getCost());

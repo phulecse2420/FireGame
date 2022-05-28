@@ -1,11 +1,9 @@
 package logan.resolver;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 
 import logan.model.GameStatus;
 import logan.utils.RangeUtil;
@@ -17,10 +15,10 @@ class BfsResolver extends Resolver {
     private final Queue<GameStatus>        queue;
     private final Map<Integer, GameStatus> checkedStatus;
 
-    BfsResolver () {
+    BfsResolver (ResolverConfig config) {
+        super(config, ResolverType.BFS);
         this.queue = new LinkedList<>();
         this.checkedStatus = new HashMap<>();
-        this.type = ResolverType.BFS;
     }
 
     @Override
@@ -36,7 +34,7 @@ class BfsResolver extends Resolver {
             log.debug("Check... [{}] checkedStatus size [{}]", status.hashCode(), checkedStatus.size());
             if ( status.isFinish() ) {
                 if ( isBetterStatus(status) ) {
-                    bestResolver = status;
+                    setBestResolver(status);
                     log.info("Find a better solution with cost [{}] move [{}].", status.getCost(), status.getMoves());
                 }
             }
