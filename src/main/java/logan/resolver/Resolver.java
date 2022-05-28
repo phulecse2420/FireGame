@@ -1,48 +1,83 @@
 package logan.resolver;
 
-import logan.model.GameResult;
+import java.util.LinkedList;
+
+import logan.model.GamePrinter;
 import logan.model.GameStatus;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class Resolver {
 
-    protected int        expectedMovesNumber;
-    protected ResolverType type;
-    protected GameStatus bestResolver;
+    protected final ResolverConfig config;
+    protected final ResolverType type;
+    protected final LinkedList<GameStatus> resultList;
 
-    public GameResult execute (GameStatus gameStatus, int expectedMovesNumber) {
-        log.info("[{}] resolver starts...", type);
-        var startTimestamp = System.currentTimeMillis();
-        solve(gameStatus, expectedMovesNumber);
-        var runtime = System.currentTimeMillis() - startTimestamp;
-        log.info("[{}] resolver ends in [{}] ms.", type, runtime);
-        return new GameResult(bestResolver, runtime);
+    private GameStatus bestResolver;
+
+    protected Resolver (ResolverConfig config, ResolverType type) {
+        this.config = config;
+        this.type = type;
+        if ( config.getNumberOfResult() > 1 ) {
+            resultList = new LinkedList<>();
+        }
+        else {
+            resultList = null;
+        }
     }
 
-    protected void solve (GameStatus gameStatus, int expectedMovesNumber) {
-        this.expectedMovesNumber = expectedMovesNumber;
-        solve();
+    public GameStatus execute (GameStatus gameStatus) {
+        log.info("[{}] resolver starts...", type);
+        solve(gameStatus);
         if ( log.isInfoEnabled() ) {
             logResult();
         }
+        log.info("[{}] resolver ends.", type);
+        return bestResolver;
     }
 
-    abstract void solve();
-
-    protected int getExpectMoves (GameStatus bestResolver) {
-        if ( null == bestResolver ) {
-            return expectedMovesNumber;
-        }
-        return bestResolver.getMoves();
-    }
+    abstract void solve (GameStatus gameStatus);
 
     protected void logResult () {
         if ( null != bestResolver ) {
-            log.info("The best solution {}", bestResolver.generateResolveTrace());
+            if ( config.getNumberOfResult() > 1 ) {
+                var descendingIterator = resultList.descendingIterator();
+                for (int i = 0; i < config.getNumberOfResult() && descendingIterator.hasNext(); i++) {
+                    var result = descendingIterator.next();
+                    log.info(
+                        "The result [{}] with cost [{}] move [{}] {}", i, result.getCost(), result.getMoves(),
+                        GamePrinter.generateResolveTrace(result)
+                    );
+                }
+            }
+            else {
+                log.info("The best solution {}", GamePrinter.generateResolveTrace(bestResolver));
+            }
         }
         else {
             log.info("No solution found.");
         }
+    }
+
+    protected boolean isBetterStatus (GameStatus status) {
+        if ( null != bestResolver ) {
+            return GameStatus.compare(bestResolver, status);
+        }
+        else {
+            if ( config.getMaxCost() > status.getCost() ) {
+                return true;
+            }
+            else if ( config.getMaxCost() == status.getCost() ) {
+                return config.getMaxMoves() > status.getMoves();
+            }
+        }
+        return false;
+    }
+
+    protected void setBestResolver (GameStatus bestResolver) {
+        if (config.getNumberOfResult() > 1) {
+            resultList.add(bestResolver);
+        }
+        this.bestResolver = bestResolver;
     }
 }
