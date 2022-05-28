@@ -14,7 +14,7 @@ Configuration:
         ref: Console_Appender
     logger:
       - name: logan
-        level: debug
+        level: info
         additivity: false
         AppenderRef:
           ref: Console_Appender

@@ -33,13 +33,6 @@ public abstract class Resolver {
 
     abstract void solve (GameStatus gameStatus);
 
-    protected int getExpectMoves (GameStatus bestResolver) {
-        if ( null == bestResolver ) {
-            return expectedMovesNumber;
-        }
-        return bestResolver.getMoves();
-    }
-
     protected void logResult () {
         if ( null != bestResolver ) {
             log.info("The best solution {}", GamePrinter.generateResolveTrace(bestResolver));

@@ -28,13 +28,13 @@ class DfsResolver extends Resolver {
         while ( !stack.isEmpty() ) {
             var status = stack.pop();
             if ( status.isFinish() ) {
-                if ( getExpectMoves(bestResolver) > status.getMoves() ) {
+                if ( isBetterStatus(status)) {
                     bestResolver = status;
                     log.info("Find a better solution with cost [{}] move [{}].", status.getCost(), status.getMoves());
                 }
             }
-            else if ( getExpectMoves(bestResolver) > status.getMoves() + 1 ) {
-                status.generateChildren().forEach(this.stack::push);
+            else if ( expectedMovesNumber >= status.getMoves() + 1 ) {
+                status.generateChildren().filter(this::isBetterStatus).forEach(this.stack::push);
             }
 
         }

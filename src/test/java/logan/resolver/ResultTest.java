@@ -12,7 +12,7 @@ import logan.model.GameStatus;
 
 class ResultTest {
 
-    private static final int EXPECT_MOVES = 20;
+    private static final int EXPECT_MOVES = 10;
 
     @Test
     void noSolutionFound () {
@@ -48,27 +48,27 @@ class ResultTest {
     @Test
     void fiveFiresTest () {
         var gameStatus = GameStatus.initGameStatus(false, false, false, false, false);
-        executeTest(gameStatus, 5, 2, ResolverType.DFS);
+        executeTest(gameStatus, 5, 2);
         gameStatus = GameStatus.initGameStatus(true, false, false, false, false);
-        executeTest(gameStatus, 4, 1, ResolverType.DFS);
+        executeTest(gameStatus, 4, 1);
         gameStatus = GameStatus.initGameStatus(true, true, false, false, false);
-        executeTest(gameStatus, 1, 1, ResolverType.DFS);
+        executeTest(gameStatus, 1, 1);
         gameStatus = GameStatus.initGameStatus(true, false, true, false, false);
-        executeTest(gameStatus, 3, 1, ResolverType.DFS);
+        executeTest(gameStatus, 3, 1);
     }
 
     @Test
     void eightFiresTest () {
         var gameStatus = GameStatus.initGameStatus(false, true, false, true, true, false, true, true);
-        executeTest(gameStatus, 9, 1, ResolverType.DFS);
+        executeTest(gameStatus, 9, 1);
     }
 
     @Test
     void tenFiresTest () {
         var gameStatus = GameStatus.initGameStatus(false, true, false, true, true, false, true, true, true, true);
-        executeTest(gameStatus, 7, 1, ResolverType.DFS);
+        executeTest(gameStatus, 7, 1);
         gameStatus = GameStatus.initGameStatus(
             false, false, false, false, false, false, false, false, false, false);
-        executeTest(gameStatus, 10, 2, ResolverType.DFS);
+        executeTest(gameStatus, 10, 2);
     }
 }

@@ -13,12 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 public class FireGameApplication {
 
     public static void main (String[] args) {
-        var gameStatus        = GameStatus.initGameStatus(false, false, false, false, false);
-        var times             = 1;
-        var expectStackLength = 15;
+        var gameStatus        = GameStatus.initGameStatus(false, false, false, false, false, false, false, false, false, false);
+        var times             = 10;
+        var expectStackLength = 11;
         var performanceHelper = new PerformanceHelper(times);
         performanceHelper.executeTest(() -> {
-            var resolver = ResolverFactory.createResolver(ResolverType.BFS);
+            var resolver = ResolverFactory.createResolver(ResolverType.DFS);
             return resolver.execute(gameStatus, expectStackLength).getRuntime();
         });
     }
