@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 import logan.utils.RangeUtil;
 import logan.utils.TouchHelper;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -36,7 +35,6 @@ public class GameStatus {
         this.moves = parent.moves + 1;
     }
 
-    @Builder
     public static GameStatus initGameStatus (boolean... fires) {
         if ( null == fires ) {
             throw new IllegalArgumentException("Invalid input");

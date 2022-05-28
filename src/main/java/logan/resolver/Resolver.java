@@ -3,7 +3,6 @@ package logan.resolver;
 import java.util.LinkedList;
 
 import logan.model.GamePrinter;
-import logan.model.GameResult;
 import logan.model.GameStatus;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,16 +26,14 @@ public abstract class Resolver {
         }
     }
 
-    public GameResult execute (GameStatus gameStatus) {
+    public GameStatus execute (GameStatus gameStatus) {
         log.info("[{}] resolver starts...", type);
-        var startTimestamp = System.currentTimeMillis();
         solve(gameStatus);
         if ( log.isInfoEnabled() ) {
             logResult();
         }
-        var runtime = System.currentTimeMillis() - startTimestamp;
-        log.info("[{}] resolver ends in [{}] ms.", type, runtime);
-        return new GameResult(bestResolver, runtime);
+        log.info("[{}] resolver ends.", type);
+        return bestResolver;
     }
 
     abstract void solve (GameStatus gameStatus);

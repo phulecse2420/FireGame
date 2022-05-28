@@ -17,13 +17,15 @@ public class PerformanceHelper {
         this.executeTimes = new ArrayList<>(times);
     }
 
-    public void executeTest (LongSupplier longSupplier) {
+    public void executeTest (Runnable runnable) {
         for (int i = 0; i < times; i++) {
             if ( times > 1 ) {
                 log.warn("Test time [{}]", i);
                 System.gc();
             }
-            executeTimes.add(longSupplier.getAsLong());
+            var start = System.currentTimeMillis();
+            runnable.run();
+            executeTimes.add(System.currentTimeMillis() - start);
         }
         if ( times > 1 ) {
             log.warn("Min [{}] ms", executeTimes.stream().mapToLong(i -> i).min().orElse(0));

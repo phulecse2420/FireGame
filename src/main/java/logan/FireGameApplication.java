@@ -21,7 +21,7 @@ public class FireGameApplication {
         var performanceHelper = new PerformanceHelper(times);
         performanceHelper.executeTest(() -> {
             var resolver = ResolverFactory.createResolver(ResolverType.BFS, config);
-            return resolver.execute(gameStatus).getRuntime();
+            resolver.execute(gameStatus);
         });
     }
 
