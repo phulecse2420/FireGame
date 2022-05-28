@@ -96,7 +96,9 @@ public class GameStatus {
 
     @Override
     public String toString () {
-        return Arrays.toString(fires);
+        var sb = new StringBuilder();
+        GamePrinter.firesToString(fires, sb);
+        return sb.toString();
     }
 
     public Stream<GameStatus> generateChildren () {
@@ -104,7 +106,7 @@ public class GameStatus {
     }
 
     public Stream<GameStatus> generateChildrenWithoutCheckSolutionPath () {
-        return RangeUtil.getStream().filter(i -> i != step).map(index -> {
+        return RangeUtil.getStream().filter(i -> !Objects.equals(i, step)).map(index -> {
             var childFires = TouchHelper.touch(index, fires);
             return new GameStatus(this, index, childFires);
         });

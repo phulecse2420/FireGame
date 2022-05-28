@@ -28,7 +28,7 @@ public class GamePrinter {
         for (var descendingIterator = resolveTrace.descendingIterator(); descendingIterator.hasNext(); ) {
             var gameStatus = descendingIterator.next();
             sb.append('\n').append(index).append("    ");
-            arrayToString(gameStatus.getFires(), sb);
+            firesToString(gameStatus.getFires(), sb);
             sb.append("    ");
             if ( null != gameStatus.getStep() ) {
                 sb.append(gameStatus.getStep()).append("    ").append(gameStatus.getStepCost());
@@ -40,11 +40,11 @@ public class GamePrinter {
         return sb.toString();
     }
 
-    private static void arrayToString (boolean[] a, StringBuilder destination) {
-        int iMax = a.length - 1;
+    public static void firesToString (boolean[] fires, StringBuilder destination) {
+        int iMax = fires.length - 1;
         destination.append('[');
         for (int i = 0; ; i++) {
-            destination.append(a[i] ? '+' : '-');
+            destination.append(fires[i] ? '+' : '-');
             if ( i == iMax ) {
                 destination.append(']');
                 break;
