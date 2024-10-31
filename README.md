@@ -1,9 +1,9 @@
 # Fire Game
 ## Rules:
-- Fire game is a game in which you have a ring with n candles ( n usually greater than 5).
-- Each candle has two statuses: burn or not burn.
-- With each move you can change the status of a candle, the two next to candles of this one will change together.
-- When changing the status of a candle from not burn to burn, the cost is 1. But from burn to not burn cost is 0.
-> Ex: The ring has eight candles. The first, second and eighth have the status is burned. When we change the status of the first candle to not burn, the second and the eighth one will change to not burn together. After this move, the statuses of the three candles change to not burn.
+- Fire Game involves a ring of n candles (typically more than 5).
+- Each candle can either be burning or unlit.
+- When you make a move, you can change the status of one candle, and the two adjacent candles will change status as well.
+- Changing a candle from unlit to burning costs 1 point, while switching it from burning to unlit costs nothing.
+> For example, the ring has eight candles. The first, second, and eighth candles are currently burning. When we change the status of the first candle to unlit, the second and eighth candles will also switch to unlit. After this move, all three candles will be unlit.
 ## Purpose:
-- The purpose of this game is from the start status of the ring after x moves, all candles will burn. The cost and the move are minimal.
+- The goal of the game is to make all the candles burn after a certain number of moves, starting from their initial status, while minimizing the cost and the number of moves.
