@@ -67,7 +67,7 @@ public class SaveTableToCSV {
     }
 
     private static void downloadForTopic (WebDriver driver, CSVPrinter csvPrinter, String topic) throws IOException {
-        driver.get("https://akhq.unified.com/ui/prod-kafka/topic/" + topic + "/partitions");
+        driver.get("https://akhq.unified.com/ui/stage-kafka/topic/" + topic + "/partitions");
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         wait.until(d -> {

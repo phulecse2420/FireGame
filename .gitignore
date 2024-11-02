@@ -1,4 +1,5 @@
 target/
 .idea/
 *.iml
-output
+output/
+/neo4j
