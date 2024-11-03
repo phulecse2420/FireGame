@@ -8,7 +8,7 @@ class DefaultChecker extends ExistChecker {
     private final Set<Integer> hashCodes = new HashSet<>();
 
     public DefaultChecker (ExistChecker checker) {
-        super(checker);
+        super(null);
     }
 
     @Override

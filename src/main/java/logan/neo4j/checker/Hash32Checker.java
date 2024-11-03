@@ -22,7 +22,8 @@ class Hash32Checker extends ExistChecker {
     @Override
     protected boolean executeCheck (String cypher) {
         var hashcode = hash.hashString(cypher, StandardCharsets.UTF_8);
-        return !hashCodes.add(hashcode.asInt()) || checker.executeCheck(cypher);
+        var subCheck = checker.executeCheck(cypher);
+        return !hashCodes.add(hashcode.asInt()) || subCheck;
     }
 
 }
