@@ -10,22 +10,25 @@ import logan.neo4j.checker.ExistChecker;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class DedupCypher {
+public class ExtractDedupCypher {
 
     public static void main (String[] args) {
-        String inputFilePath        = "neo4j/repeated_1730710220256.csv";
+        String inputFilePath        = "neo4j/neo4j_cypher_log_2024_10_18.csv";
         long   timestamp            = System.currentTimeMillis();
-        String outputFileFullPath   = "neo4j/repeated_dedup_" + timestamp + ".csv";
+        String outputFileFullPath   = "neo4j/full_" + timestamp + ".csv";
+        String outputFileCypherPath = "neo4j/cypher_" + timestamp + ".csv";
 
         try (
             BufferedReader br = new BufferedReader(new FileReader(inputFilePath));
-            BufferedWriter bw = new BufferedWriter(new FileWriter(outputFileFullPath));
+            BufferedWriter bwFull = new BufferedWriter(new FileWriter(outputFileFullPath));
+            BufferedWriter bwCypher = new BufferedWriter(new FileWriter(outputFileCypherPath));
         ) {
             String line;
             while ( (line = br.readLine()) != null ) {
-                var extractor = handleLine(line);
-                if ( null != extractor ) {
-                    writeToOutputFile(bw, extractor);
+                var cypher = handleLine(line);
+                if ( null != cypher ) {
+                    writeToOutputFile(bwFull, line);
+                    writeToOutputFile(bwCypher, cypher);
                 }
             }
         }
@@ -35,7 +38,7 @@ public class DedupCypher {
     }
 
     private static String handleLine (String line) {
-        String cypher = extractSubString(line);
+        String cypher = extractCypher(line);
         if ( isNotExist(cypher) ) {
             return cypher;
         }
@@ -48,8 +51,8 @@ public class DedupCypher {
         bw.flush();
     }
 
-    private static String extractSubString (String line) {
-        return SubExtractor.extract(line);
+    private static String extractCypher (String line) {
+        return CypherExtractor.extract(line);
     }
 
     private static boolean isNotExist (String cypher) {
